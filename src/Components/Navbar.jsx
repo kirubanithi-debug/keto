@@ -14,6 +14,9 @@ const Navbar = () => {
   const handleAbout = () => {
     navigate("/About");
   };
+  const handleHome =()=> {
+    navigate("/Home")
+  }
 
   return (
     <div className=" w-full  bg-transparent">
@@ -21,7 +24,7 @@ const Navbar = () => {
         <img src={logo} alt="logo" className="h-12 w-30 object-contain" />
         <ul className="hidden md:flex gap-7 font-bold text-white">
           <li className="hover:text-gray-400">
-            <a href="#Header" className="cursor-pointer">
+            <a href="Homepage" onClick={handleHome} className="cursor-pointer">
               Home
             </a>
           </li>
