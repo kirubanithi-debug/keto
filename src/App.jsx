@@ -1,0 +1,23 @@
+import React from "react";
+import Header from "./Components/Header";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Jobapplication from "./Components/Jobapplication";
+import Login from "./Components/Login";
+import Signup from "./Components/Signup";
+
+const App = () => {
+  return (
+    <div className="w-full overflow-hidden ">
+      <Router>
+        <Routes>
+          <Route path="/" element={<Header />} />
+          <Route path="apply" element={<Jobapplication />} />
+         <Route path="Login" element={<Login />}  /> 
+         <Route path="Signup" element={<Signup />} />
+        </Routes>
+      </Router>
+    </div>
+  );
+};
+
+export default App;
