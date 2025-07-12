@@ -55,7 +55,7 @@ const Navbar = () => {
         >
           Start the journey
         </a>
-        <span>Join with us just click👆</span>
+        <span>Join with us just click</span>
       </div>
     </div>
   );
