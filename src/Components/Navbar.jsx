@@ -10,11 +10,15 @@ const Navbar = () => {
   const handleLogin = () => {
     navigate("/Login");
   };
+  
+  const handleAbout = () => {
+    navigate("/About");
+  };
 
   return (
-    <div className=" w-full z-10 bg-transparent">
-      <div className="container mx-auto flex justify-between items-center py-4 px-4 md:px-20 lg:px-12">
-        <img src={logo} alt="logo" className="h-12 w-40 object-contain" />
+    <div className=" w-full  bg-transparent">
+      <div className="container mx-auto w-full flex justify-between items-center py-2 md:px-20 lg:px-10">
+        <img src={logo} alt="logo" className="h-12 w-30 object-contain" />
         <ul className="hidden md:flex gap-7 font-bold text-white">
           <li className="hover:text-gray-400">
             <a href="#Header" className="cursor-pointer">
@@ -22,7 +26,7 @@ const Navbar = () => {
             </a>
           </li>
           <li className="hover:text-gray-400">
-            <a href="#About" className="cursor-pointer">
+            <a href="#" onClick={handleAbout} className="cursor-pointer">
               About
             </a>
           </li>
@@ -44,14 +48,14 @@ const Navbar = () => {
         </div>
       </div>
       {/* Centered content below navbar */}
-      <div className="flex flex-col items-center justify-center h-140 text-white">
-        <p className="flex text-4xl md:text-4xl sm:text-2xl font-bold mb-4 text-center md:h-20 sm:h-10">
+      <div className="flex flex-col items-center justify-center min-h-screen text-white">
+        <p className="flex text-3xl md:text-4xl sm:text-2xl font-bold mb-2 text-center md:h-10 sm:h-10">
           Find the job using Keto for specific resources
         </p>
         <a
           href=""
           onClick={handleClick}
-          className="mt-4 flex bg-blue-600 rounded-full items-center-safe w-52 h-10  justify-center  text-black border-2 border-[#0408fc] font-bold shadow transition duration-300 hover:bg-[#0499fc] hover:text-white"
+          className="mt-2 flex bg-blue-600 rounded-full items-center-safe w-52 h-10  justify-center  text-black border-2 border-[#0408fc] font-bold shadow transition duration-300 hover:bg-[#0499fc] hover:text-white"
         >
           Start the journey
         </a>
