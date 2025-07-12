@@ -13,7 +13,7 @@ const Navbar = () => {
 
   return (
     <div className=" w-full z-10 bg-transparent">
-      <div className="container mx-auto flex justify-between items-center py-4 px-4 md:px-20 lg:px-32">
+      <div className="container mx-auto flex justify-between items-center py-4 px-4 md:px-20 lg:px-12">
         <img src={logo} alt="logo" className="h-12 w-40 object-contain" />
         <ul className="hidden md:flex gap-7 font-bold text-white">
           <li className="hover:text-gray-400">
@@ -37,7 +37,7 @@ const Navbar = () => {
             </a>
           </li>
         </ul>
-        <div className="hidden md:flex bg-white text-center rounded-full items-center-safe px-10 w-20 h-10  justify-center  text-[#0499fc] border-2 border-[#0499fc] font-bold shadow transition duration-300 hover:bg-[#0499fc] hover:text-white">
+        <div className="hidden md:flex bg-white rounded-full items-center-safe w-28 h-10  justify-center text-[#0499fc] border-2 border-[#0499fc] font-bold shadow transition duration-300 hover:bg-[#0499fc] hover:text-white">
           <a href="" onClick={handleLogin} className="text-center">
             log in
           </a>
@@ -51,11 +51,11 @@ const Navbar = () => {
         <a
           href=""
           onClick={handleClick}
-          className="mt-4 flex bg-blue-600 text-center rounded-full items-center-safe px-10 w-40 h-10  justify-center  text-black border-2 border-[#0408fc] font-bold shadow transition duration-300 hover:bg-[#0499fc] hover:text-white"
+          className="mt-4 flex bg-blue-600 rounded-full items-center-safe w-52 h-10  justify-center  text-black border-2 border-[#0408fc] font-bold shadow transition duration-300 hover:bg-[#0499fc] hover:text-white"
         >
           Start the journey
         </a>
-        <span>Join with us just click</span>
+        <span>Join with us just click👆</span>
       </div>
     </div>
   );

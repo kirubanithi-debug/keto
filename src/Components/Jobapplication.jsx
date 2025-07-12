@@ -255,11 +255,10 @@ const JobApplication = () => {
           <button
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className={`w-full h-14 text-lg font-semibold boder-r rounded-lg transition-all duration-300 ${
-              isSubmitting
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded hover:from-violet-700 hover:to-indigo-700 transform hover:scale-[1.02] shadow-lg hover:shadow-xl"
-            }`}
+            className={`w-full h-14 text-lg font-semibold boder-r rounded-lg transition-all duration-300 ${isSubmitting
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded hover:from-violet-700 hover:to-indigo-700 transform hover:scale-[1.02] shadow-lg hover:shadow-xl"
+              }`}
           >
             {isSubmitting ? (
               <div className="flex items-center justify-center">
@@ -310,11 +309,10 @@ const FieldWrapper = ({
       value={value}
       onChange={onChange}
       placeholder={placeholder}
-      className={`w-full px-6 py-4 text-lg border-3 rounded-lg focus:outline-none transition-colors focus:ring-2 h-10 ${
-        error
-          ? "border-red-300 focus:border-red-500 focus:ring-red-100"
-          : "border-violet-600 focus:border-violet-600 focus:ring-violet-600"
-      }`}
+      className={`w-full px-6 py-4 text-lg border-3 rounded-lg focus:outline-none transition-colors focus:ring-2 h-10 ${error
+        ? "border-red-300 focus:border-red-500 focus:ring-red-100"
+        : "border-violet-600 focus:border-violet-600 focus:ring-violet-600"
+        }`}
       {...rest}
     />
     {error && (
