@@ -35,7 +35,8 @@ const JobApplication = () => {
     email: "",
     phone: "",
     workplace: "",
-    Department: "", // Added missing Department field
+    Department: "",
+    customDepartment: "", // Added for custom department input
     workplacename: "",
     experience: "",
     resume: null,
@@ -60,9 +61,11 @@ const JobApplication = () => {
     }
     if (!user.workplace.trim())
       newErrors.workplace = "Current position is required";
-    if (!user.Department.trim())
-      // Added validation for Department
+    if (!user.Department.trim()) {
       newErrors.Department = "Department name is required";
+    } else if (user.Department === "Other" && !user.customDepartment.trim()) {
+      newErrors.customDepartment = "Please specify your department";
+    }
     if (!user.workplacename.trim())
       newErrors.workplacename = "College name is required";
     if (!user.experience.trim()) {
@@ -79,6 +82,12 @@ const JobApplication = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUser((prev) => ({ ...prev, [name]: value }));
+    
+    // Clear custom department if user selects a different option
+    if (name === "Department" && value !== "Other") {
+      setUser((prev) => ({ ...prev, customDepartment: "" }));
+    }
+    
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
@@ -127,6 +136,7 @@ const JobApplication = () => {
         phone: "",
         workplace: "",
         Department: "",
+        customDepartment: "",
         workplacename: "",
         experience: "",
         resume: null,
@@ -222,6 +232,19 @@ const JobApplication = () => {
             placeholder="Select your department"
           />
 
+          {/* Custom Department Field - Shows only when "Other" is selected */}
+          {user.Department === "Other" && (
+            <FieldWrapper
+              label="Specify Your Department"
+              icon={<Building className="w-4 h-5 mr-3" />}
+              name="customDepartment"
+              value={user.customDepartment}
+              onChange={handleChange}
+              error={errors.customDepartment}
+              placeholder="Enter your department name"
+            />
+          )}
+
           <FieldWrapper
             label="Working College Name"
             icon={<Building className="w-4 h-5 mr-3" />}
@@ -246,12 +269,12 @@ const JobApplication = () => {
           />
 
           {/* Resume Upload */}
-          <div className="space-y-2 border-2 border-violet-300 rounded-xl p-5">
+          <div className="space-y-2 border border-gray-100 rounded-xl p-5">
             <label className="block text-lg font-medium text-gray-700">
               <FileText className="inline w-5 h-5 mr-2" />
               Upload Resume
             </label>
-            <div className="border-2 border-dashed border-violet-300 rounded-xl p-8 text-center hover:border-violet-500 transition-colors">
+            <div className="border border-dashed border-gray-200 rounded-xl p-8 text-center hover:border-gray-300 transition-colors">
               <input
                 type="file"
                 id="resume-upload"
@@ -335,7 +358,7 @@ const FieldWrapper = ({
   type = "text",
   ...rest
 }) => (
-  <div className="p-5 rounded-xl border border-gray-200 bg-white shadow-sm space-y-3">
+  <div className="p-5 rounded-xl border border-gray-100 bg-white shadow-sm space-y-3">
     <label className="block text-lg font-medium text-gray-700">
       {icon}
       {label}
@@ -348,8 +371,8 @@ const FieldWrapper = ({
       placeholder={placeholder}
       className={`w-full px-6 py-4 text-lg border rounded-lg focus:outline-none transition-colors focus:ring-2 h-10 ${
         error
-          ? "border-red-300 focus:border-red-500 focus:ring-red-100"
-          : "border-gray-300 focus:border-violet-500 focus:ring-violet-100"
+          ? "border-red-200 focus:border-red-400 focus:ring-red-50"
+          : "border-gray-200 focus:border-violet-300 focus:ring-violet-50"
       }`}
       {...rest}
     />
@@ -362,7 +385,7 @@ const FieldWrapper = ({
   </div>
 );
 
-// New SelectWrapper component for dropdown
+// Updated SelectWrapper component with lighter borders
 const SelectWrapper = ({
   label,
   icon,
@@ -373,7 +396,7 @@ const SelectWrapper = ({
   placeholder,
   options,
 }) => (
-  <div className="p-5 rounded-xl border border-gray-200 bg-white shadow-sm space-y-3">
+  <div className="p-5 rounded-xl border border-gray-100 bg-white shadow-sm space-y-3">
     <label className="block text-lg font-medium text-gray-700">
       {icon}
       {label}
@@ -383,22 +406,28 @@ const SelectWrapper = ({
         name={name}
         value={value}
         onChange={onChange}
-        className={`w-full px-6 py-4 text-lg border rounded-lg focus:outline-none transition-colors focus:ring-2 h-10 appearance-none cursor-pointer ${
+        className={`w-full px-6 py-4 text-lg border rounded-lg focus:outline-none transition-colors focus:ring-2 h-10 appearance-none cursor-pointer pr-12 ${
           error
-            ? "border-red-300 focus:border-red-500 focus:ring-red-100"
-            : "border-gray-300 focus:border-violet-500 focus:ring-violet-100"
+            ? "border-red-200 focus:border-red-400 focus:ring-red-50"
+            : "border-gray-200 focus:border-violet-300 focus:ring-violet-50"
         } ${!value ? "text-gray-400" : "text-gray-900"}`}
+        style={{
+          WebkitAppearance: 'none',
+          MozAppearance: 'none',
+          appearance: 'none',
+          backgroundImage: 'none'
+        }}
       >
-        <option value="" disabled>
+        <option value="" disabled className="text-gray-400">
           {placeholder}
         </option>
         {options.map((option) => (
-          <option key={option} value={option} className="text-gray-900">
+          <option key={option} value={option} className="text-gray-900 bg-white">
             {option}
           </option>
         ))}
       </select>
-      <ChevronDown className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+      <ChevronDown className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-300 pointer-events-none z-10" />
     </div>
     {error && (
       <p className="text-red-500 text-sm mt-1 flex items-center">
