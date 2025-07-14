@@ -8,14 +8,34 @@ import {
   CheckCircle,
   AlertCircle,
   FileText,
+  ChevronDown,
 } from "lucide-react";
 
 const JobApplication = () => {
+  // Add department options
+  const departmentOptions = [
+    "Computer Science",
+    "Information Technology",
+    "Electronics & Communication",
+    "Mechanical Engineering",
+    "Civil Engineering",
+    "Electrical Engineering",
+    "Business Administration",
+    "Mathematics",
+    "Physics",
+    "Chemistry",
+    "English",
+    "Economics",
+    "Psychology",
+    "Other",
+  ];
+
   const [user, setUser] = useState({
     username: "",
     email: "",
     phone: "",
     workplace: "",
+    Department: "", // Added missing Department field
     workplacename: "",
     experience: "",
     resume: null,
@@ -40,8 +60,11 @@ const JobApplication = () => {
     }
     if (!user.workplace.trim())
       newErrors.workplace = "Current position is required";
+    if (!user.Department.trim())
+      // Added validation for Department
+      newErrors.Department = "Department name is required";
     if (!user.workplacename.trim())
-      newErrors.workplacename = "Company name is required";
+      newErrors.workplacename = "College name is required";
     if (!user.experience.trim()) {
       newErrors.experience = "Experience is required";
     } else if (isNaN(user.experience) || user.experience < 0) {
@@ -103,6 +126,7 @@ const JobApplication = () => {
         email: "",
         phone: "",
         workplace: "",
+        Department: "",
         workplacename: "",
         experience: "",
         resume: null,
@@ -183,11 +207,23 @@ const JobApplication = () => {
             value={user.workplace}
             onChange={handleChange}
             error={errors.workplace}
-            placeholder="e.g. Assitant Professor"
+            placeholder="e.g. Assistant Professor"
+          />
+
+          {/* Department Dropdown */}
+          <SelectWrapper
+            label="Department Name"
+            icon={<Building className="w-4 h-5 mr-3" />}
+            name="Department"
+            value={user.Department}
+            onChange={handleChange}
+            error={errors.Department}
+            options={departmentOptions}
+            placeholder="Select your department"
           />
 
           <FieldWrapper
-            label="working college Name"
+            label="Working College Name"
             icon={<Building className="w-4 h-5 mr-3" />}
             name="workplacename"
             value={user.workplacename}
@@ -255,14 +291,15 @@ const JobApplication = () => {
           <button
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className={`w-full h-14 text-lg font-semibold boder-r rounded-lg transition-all duration-300 ${isSubmitting
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded hover:from-violet-700 hover:to-indigo-700 transform hover:scale-[1.02] shadow-lg hover:shadow-xl"
-              }`}
+            className={`w-full h-14 text-lg font-semibold border rounded-lg transition-all duration-300 ${
+              isSubmitting
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded hover:from-violet-700 hover:to-indigo-700 transform hover:scale-[1.02] shadow-lg hover:shadow-xl"
+            }`}
           >
             {isSubmitting ? (
               <div className="flex items-center justify-center">
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue mr-3"></div>
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
                 Submitting...
               </div>
             ) : (
@@ -286,7 +323,7 @@ const JobApplication = () => {
   );
 };
 
-// Updated FieldWrapper with focused border and ring styling
+// Updated FieldWrapper with lighter border styling
 const FieldWrapper = ({
   label,
   icon,
@@ -298,7 +335,7 @@ const FieldWrapper = ({
   type = "text",
   ...rest
 }) => (
-  <div className="p-5 rounded-xl border-2 border-violet-300 bg-white shadow-sm space-y-3">
+  <div className="p-5 rounded-xl border border-gray-200 bg-white shadow-sm space-y-3">
     <label className="block text-lg font-medium text-gray-700">
       {icon}
       {label}
@@ -309,12 +346,60 @@ const FieldWrapper = ({
       value={value}
       onChange={onChange}
       placeholder={placeholder}
-      className={`w-full px-6 py-4 text-lg border-3 rounded-lg focus:outline-none transition-colors focus:ring-2 h-10 ${error
-        ? "border-red-300 focus:border-red-500 focus:ring-red-100"
-        : "border-violet-600 focus:border-violet-600 focus:ring-violet-600"
-        }`}
+      className={`w-full px-6 py-4 text-lg border rounded-lg focus:outline-none transition-colors focus:ring-2 h-10 ${
+        error
+          ? "border-red-300 focus:border-red-500 focus:ring-red-100"
+          : "border-gray-300 focus:border-violet-500 focus:ring-violet-100"
+      }`}
       {...rest}
     />
+    {error && (
+      <p className="text-red-500 text-sm mt-1 flex items-center">
+        <AlertCircle className="w-4 h-4 mr-1" />
+        {error}
+      </p>
+    )}
+  </div>
+);
+
+// New SelectWrapper component for dropdown
+const SelectWrapper = ({
+  label,
+  icon,
+  name,
+  value,
+  onChange,
+  error,
+  placeholder,
+  options,
+}) => (
+  <div className="p-5 rounded-xl border border-gray-200 bg-white shadow-sm space-y-3">
+    <label className="block text-lg font-medium text-gray-700">
+      {icon}
+      {label}
+    </label>
+    <div className="relative">
+      <select
+        name={name}
+        value={value}
+        onChange={onChange}
+        className={`w-full px-6 py-4 text-lg border rounded-lg focus:outline-none transition-colors focus:ring-2 h-10 appearance-none cursor-pointer ${
+          error
+            ? "border-red-300 focus:border-red-500 focus:ring-red-100"
+            : "border-gray-300 focus:border-violet-500 focus:ring-violet-100"
+        } ${!value ? "text-gray-400" : "text-gray-900"}`}
+      >
+        <option value="" disabled>
+          {placeholder}
+        </option>
+        {options.map((option) => (
+          <option key={option} value={option} className="text-gray-900">
+            {option}
+          </option>
+        ))}
+      </select>
+      <ChevronDown className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+    </div>
     {error && (
       <p className="text-red-500 text-sm mt-1 flex items-center">
         <AlertCircle className="w-4 h-4 mr-1" />
