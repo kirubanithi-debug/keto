@@ -66,13 +66,12 @@ const Login = () => {
               <input type="checkbox" className="mr-2" />
               Remember me
             </label>
-            <button
-              type="button"
-              onClick={() => alert("Forgot password clicked")}
+            <Link
+              to="/Forgotpassword"
               className="text-blue-600 underline text-sm hover:text-blue-800"
             >
               Forgot password?
-            </button>
+            </Link>
           </div>
 
           <button

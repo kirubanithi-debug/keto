@@ -5,6 +5,7 @@ import Jobapplication from "./Components/Jobapplication";
 import Login from "./Components/Login";
 import Signup from "./Components/Signup";
 import About from "./Components/About";
+import Forgotpassword from "./Components/Forgotpassword";
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
           <Route path="apply" element={<Jobapplication />} />
          <Route path="Login" element={<Login />}  /> 
          <Route path="Signup" element={<Signup />} />
+         <Route path="/Forgotpassword" element={<Forgotpassword />} />
          <Route path="About" element={<About />} />
           <Route path="Home" element={<Header />} />
         </Routes>
