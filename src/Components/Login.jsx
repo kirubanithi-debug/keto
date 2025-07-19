@@ -5,25 +5,70 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [userType, setUserType] = useState("general"); // 'general' or 'college'
 
   const handleLogin = (e) => {
     e.preventDefault();
+
     if (email === "admin@example.com" && password === "123456") {
-      alert("Login successful!");
+      const loginData = {
+        email,
+        userType,
+      };
+      console.log("Login data:", loginData);
+      alert(
+        `Login successful as ${
+          userType === "college" ? "College User" : "General User"
+        }!`
+      );
     } else {
       setError("Invalid email or password");
     }
   };
 
+  const handleUserTypeChange = (type) => {
+    setUserType(type);
+    setError(""); // Clear any existing errors when switching user type
+  };
+
+  
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-5">
       <div className="bg-white p-10 rounded-lg shadow-md w-full max-w-md">
-        <h1 className="text-center text-2xl font-bold mb-5 text-gray-800">
+        <h1 className="text-center text-2xl font-bold mb-3 text-gray-800">
           Welcome Back
         </h1>
 
-        <p className="text-center text-gray-500 mb-8 text-sm">
-          Sign in to your account
+        {/* User Type Selection */}
+        <div className="flex mb-6">
+          <button
+            type="button"
+            onClick={() => handleUserTypeChange("general")}
+            className={`flex-1 py-2 px-4 text-sm font-medium rounded-l-md border transition-colors duration-200 ${
+              userType === "general"
+                ? "bg-blue-600 text-white border-blue-600"
+                : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+            }`}
+          >
+            General User
+          </button>
+          <button
+            type="button"
+            onClick={() => handleUserTypeChange("college")}
+            className={`flex-1 py-2 px-4 text-sm font-medium rounded-r-md border-t border-r border-b transition-colors duration-200 ${
+              userType === "college"
+                ? "bg-blue-600 text-white border-blue-600"
+                : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+            }`}
+          >
+            College
+          </button>
+        </div>
+
+        <p className="text-center text-gray-500 mb-6 text-sm">
+          Sign in to your account as{" "}
+          {userType === "college" ? "College User" : "General User"}
         </p>
 
         {error && (
@@ -61,6 +106,8 @@ const Login = () => {
             />
           </div>
 
+          {/* College-specific fields removed - only email and password needed */}
+
           <div className="flex items-center justify-between mb-5">
             <label className="flex items-center text-sm text-gray-700">
               <input type="checkbox" className="mr-2" />
@@ -85,7 +132,7 @@ const Login = () => {
         <div className="text-center mt-5">
           <p className="text-sm text-gray-500">
             Don't have an account?{" "}
-            <Link
+             <Link
               to="/Signup"
               className="text-blue-600 underline text-sm font-medium hover:text-blue-800"
             >
