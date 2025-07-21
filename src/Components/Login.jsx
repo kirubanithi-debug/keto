@@ -7,22 +7,34 @@ const Login = () => {
   const [error, setError] = useState("");
   const [userType, setUserType] = useState("general"); // 'general' or 'college'
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setError(""); // clear error
 
-    if (email === "admin@example.com" && password === "123456") {
-      const loginData = {
-        email,
-        userType,
-      };
-      console.log("Login data:", loginData);
-      alert(
-        `Login successful as ${
-          userType === "college" ? "College User" : "General User"
-        }!`
-      );
-    } else {
-      setError("Invalid email or password");
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/login/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password, userType }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Save user info or token (optional: store in localStorage/sessionStorage)
+        localStorage.setItem("user", JSON.stringify(data));
+        alert(`Login successful as ${userType === "college" ? "College User" : "General User"}!`);
+
+        // Optionally redirect or navigate
+        // navigate("/dashboard");
+      } else {
+        setError(data.message || data.detail || "Login failed. Please check credentials.");
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      setError("Something went wrong. Please try again.");
     }
   };
 
@@ -30,8 +42,6 @@ const Login = () => {
     setUserType(type);
     setError(""); // Clear any existing errors when switching user type
   };
-
-  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-5">
@@ -106,8 +116,6 @@ const Login = () => {
             />
           </div>
 
-          {/* College-specific fields removed - only email and password needed */}
-
           <div className="flex items-center justify-between mb-5">
             <label className="flex items-center text-sm text-gray-700">
               <input type="checkbox" className="mr-2" />
@@ -132,7 +140,7 @@ const Login = () => {
         <div className="text-center mt-5">
           <p className="text-sm text-gray-500">
             Don't have an account?{" "}
-             <Link
+            <Link
               to="/Signup"
               className="text-blue-600 underline text-sm font-medium hover:text-blue-800"
             >
