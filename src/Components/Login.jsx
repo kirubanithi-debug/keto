@@ -1,17 +1,20 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link /*, useNavigate*/ } from "react-router-dom";
+// const navigate = useNavigate(); // Uncomment and use for redirects
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [userType, setUserType] = useState("general"); // 'general' or 'college'
+  const [userType, setUserType] = useState("general");
+  // const [loading, setLoading] = useState(false); // for spinner/future
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError(""); // clear error
+    setError("");
 
     try {
+      // setLoading(true); // For potential loading spinner
       const response = await fetch("http://127.0.0.1:8000/api/login/", {
         method: "POST",
         headers: {
@@ -23,32 +26,28 @@ const Login = () => {
       const data = await response.json();
 
       if (response.ok) {
-        // Save user info or token (optional: store in localStorage/sessionStorage)
         localStorage.setItem("user", JSON.stringify(data));
         alert(`Login successful as ${userType === "college" ? "College User" : "General User"}!`);
-
-        // Optionally redirect or navigate
         // navigate("/dashboard");
       } else {
         setError(data.message || data.detail || "Login failed. Please check credentials.");
       }
     } catch (err) {
-      console.error("Login error:", err);
       setError("Something went wrong. Please try again.");
+    } finally {
+      // setLoading(false);
     }
   };
 
   const handleUserTypeChange = (type) => {
     setUserType(type);
-    setError(""); // Clear any existing errors when switching user type
+    setError("");
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-5">
       <div className="bg-white p-10 rounded-lg shadow-md w-full max-w-md">
-        <h1 className="text-center text-2xl font-bold mb-3 text-gray-800">
-          Welcome Back
-        </h1>
+        <h1 className="text-center text-2xl font-bold mb-3 text-gray-800">Welcome Back</h1>
 
         {/* User Type Selection */}
         <div className="flex mb-6">
@@ -66,7 +65,7 @@ const Login = () => {
           <button
             type="button"
             onClick={() => handleUserTypeChange("college")}
-            className={`flex-1 py-2 px-4 text-sm font-medium rounded-r-md border-t border-r border-b transition-colors duration-200 ${
+            className={`flex-1 py-2 px-4 text-sm font-medium rounded-r-md border-t border-r border-b border-l transition-colors duration-200 ${
               userType === "college"
                 ? "bg-blue-600 text-white border-blue-600"
                 : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
@@ -77,14 +76,11 @@ const Login = () => {
         </div>
 
         <p className="text-center text-gray-500 mb-6 text-sm">
-          Sign in to your account as{" "}
-          {userType === "college" ? "College User" : "General User"}
+          Sign in to your account as {userType === "college" ? "College User" : "General User"}
         </p>
 
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-600 p-3 rounded-md mb-5 text-sm">
-            {error}
-          </div>
+          <div className="bg-red-50 border border-red-200 text-red-600 p-3 rounded-md mb-5 text-sm">{error}</div>
         )}
 
         <form onSubmit={handleLogin}>
@@ -131,8 +127,10 @@ const Login = () => {
 
           <button
             type="submit"
+            // disabled={loading}
             className="w-full p-3 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 transition-colors duration-200"
           >
+            {/* {loading ? "Signing In..." : "Sign In"} */}
             Sign In
           </button>
         </form>
