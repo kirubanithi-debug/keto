@@ -1,20 +1,50 @@
 import React, { useState } from "react";
-import { Link /*, useNavigate*/ } from "react-router-dom";
-// const navigate = useNavigate(); // Uncomment and use for redirects
+import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [userType, setUserType] = useState("general");
-  // const [loading, setLoading] = useState(false); // for spinner/future
+
+  // Basic email format regex
+  const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  // College emails must end with .edu or .ac.in
+  const collegeEmailRegex = /^[^\s@]+@[a-zA-Z0-9.-]+\.(edu|ac\.in)$/;
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
 
+    if (!email) {
+      setError("Please enter your email.");
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
+    if (
+      userType === "college" &&
+      !collegeEmailRegex.test(email.toLowerCase())
+    ) {
+      setError(
+        "College users must login with a valid .edu or .ac.in email address."
+      );
+      return;
+    }
+
+    if (!password) {
+      setError("Please enter your password.");
+      return;
+    }
+
     try {
-      // setLoading(true); // For potential loading spinner
       const response = await fetch("http://127.0.0.1:8000/api/login/", {
         method: "POST",
         headers: {
@@ -27,15 +57,26 @@ const Login = () => {
 
       if (response.ok) {
         localStorage.setItem("user", JSON.stringify(data));
-        alert(`Login successful as ${userType === "college" ? "College User" : "General User"}!`);
-        // navigate("/dashboard");
+        alert(
+          `Login successful as ${
+            userType === "college" ? "College User" : "General User"
+          }!`
+        );
+
+        if (userType === "college") {
+          navigate("/college-dashboard");
+        } else {
+          navigate("/general-dashboard");
+        }
       } else {
-        setError(data.message || data.detail || "Login failed. Please check credentials.");
+        setError(
+          data.message ||
+            data.detail ||
+            "Login failed. Please check your credentials."
+        );
       }
     } catch (err) {
       setError("Something went wrong. Please try again.");
-    } finally {
-      // setLoading(false);
     }
   };
 
@@ -47,7 +88,9 @@ const Login = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-5">
       <div className="bg-white p-10 rounded-lg shadow-md w-full max-w-md">
-        <h1 className="text-center text-2xl font-bold mb-3 text-gray-800">Welcome Back</h1>
+        <h1 className="text-center text-2xl font-bold mb-3 text-gray-800">
+          Welcome Back
+        </h1>
 
         {/* User Type Selection */}
         <div className="flex mb-6">
@@ -75,12 +118,20 @@ const Login = () => {
           </button>
         </div>
 
-        <p className="text-center text-gray-500 mb-6 text-sm">
-          Sign in to your account as {userType === "college" ? "College User" : "General User"}
+        <p className="text-center text-gray-500 mb-2 text-sm">
+          Sign in to your account as{" "}
+          {userType === "college" ? "College User" : "General User"}
+        </p>
+        <p className="text-center text-xs text-gray-400 mb-6">
+          {userType === "college"
+            ? "Please use your college email address (e.g., user@university.edu or user@college.ac.in)"
+            : "Enter your email address"}
         </p>
 
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-600 p-3 rounded-md mb-5 text-sm">{error}</div>
+          <div className="bg-red-50 border border-red-200 text-red-600 p-3 rounded-md mb-5 text-sm">
+            {error}
+          </div>
         )}
 
         <form onSubmit={handleLogin}>
@@ -127,10 +178,8 @@ const Login = () => {
 
           <button
             type="submit"
-            // disabled={loading}
             className="w-full p-3 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 transition-colors duration-200"
           >
-            {/* {loading ? "Signing In..." : "Sign In"} */}
             Sign In
           </button>
         </form>
