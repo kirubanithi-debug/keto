@@ -66,7 +66,7 @@ const Login = () => {
         if (userType === "college") {
           navigate("/college-dashboard");
         } else {
-          navigate("/general-dashboard");
+          navigate("/Home");
         }
       } else {
         setError(
