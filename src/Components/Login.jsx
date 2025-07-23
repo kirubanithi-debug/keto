@@ -8,6 +8,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [userType, setUserType] = useState("general");
+  const [loading, setLoading] = useState(false); // <-- Add loading state
 
   // Basic email format regex
   const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -18,9 +19,11 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
+    setLoading(true); // <-- Start loading
 
     if (!email) {
       setError("Please enter your email.");
+      setLoading(false);
       return;
     }
 
@@ -57,11 +60,11 @@ const Login = () => {
 
       if (response.ok) {
         localStorage.setItem("user", JSON.stringify(data));
-        alert(
-          `Login successful as ${
-            userType === "college" ? "College User" : "General User"
-          }!`
-        );
+        // alert(
+        //   `Login successful as ${
+        //     userType === "college" ? "College User" : "General User"
+        //   }!`
+        // );
 
         if (userType === "college") {
           navigate("/college-dashboard");
@@ -77,6 +80,8 @@ const Login = () => {
       }
     } catch (err) {
       setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false); // <-- Stop loading
     }
   };
 
@@ -178,9 +183,14 @@ const Login = () => {
 
           <button
             type="submit"
-            className="w-full p-3 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 transition-colors duration-200"
+            className={`w-full p-3 rounded-md text-sm font-medium transition-colors duration-200 ${
+              loading
+                ? "bg-blue-300 cursor-not-allowed"
+                : "bg-blue-600 text-white hover:bg-blue-700"
+            }`}
+            disabled={loading}
           >
-            Sign In
+            {loading ? "Signing In..." : "Sign In"}
           </button>
         </form>
 
