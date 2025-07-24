@@ -80,10 +80,10 @@ const Navbar = () => {
               </div>
               <div className="overflow-hidden">
                 <div className="font-semibold text-md truncate">
-                  {user.user?.username || user.user?.email?.split("@")[0] || "User"}
+                  {user.user?.username || user.username || "User"}
                 </div>
                 <div className="flex items-center gap-2 text-xs text-blue-200 truncate mt-1">
-                  <Mail className="w-4 h-4" /> {user.user?.email || "-"}
+                  <Mail className="w-4 h-4" /> {user.user?.email || user.email}
                 </div>
                 <div className="flex items-center gap-2 text-xs mt-1">
                   <BadgeCheck className="w-4 h-4 text-lime-400" />
@@ -158,6 +158,15 @@ const Navbar = () => {
                 Services
               </a>
             </li>
+
+          {/* after login it shows */}
+            {user && (
+              <li className="hover:text-gray-300 transition">
+                <button onClick={() => goTo("/")} className="cursor-pointer">
+                  Track
+                  </button>
+                  </li>
+            )}
           </ul>
 
           {/* Profile Icon Section (no button, just icon) */}
