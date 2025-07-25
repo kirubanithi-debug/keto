@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
@@ -6,9 +6,10 @@ const Login = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState({});
   const [userType, setUserType] = useState("general");
-  const [loading, setLoading] = useState(false); // <-- Add loading state
+  const [loading, setLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
 
   // Basic email format regex
   const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -16,78 +17,171 @@ const Login = () => {
   // College emails must end with .edu or .ac.in
   const collegeEmailRegex = /^[^\s@]+@[a-zA-Z0-9.-]+\.(edu|ac\.in)$/;
 
+  // Check for cached credentials on mount
+  useEffect(() => {
+    try {
+      const savedEmail = localStorage.getItem("keto_email");
+      const savedUserType = localStorage.getItem("keto_userType");
+
+      if (savedEmail) {
+        setEmail(savedEmail);
+        if (savedUserType) setUserType(savedUserType);
+      }
+    } catch (e) {
+      console.log("Error accessing localStorage");
+    }
+  }, []);
+
+  // Get cached user data if available
+  const getCachedUser = (email) => {
+    try {
+      const cached = sessionStorage.getItem(`login_${email}`);
+      if (cached) {
+        const { timestamp, data } = JSON.parse(cached);
+        // Cache valid for 30 minutes
+        if (Date.now() - timestamp < 1800000) return data;
+      }
+    } catch (e) {
+      console.log("Cache retrieval error", e);
+    }
+    return null;
+  };
+
+  const validateEmail = (value) => {
+    if (!value) return "Email is required";
+    if (!isValidEmail(value)) return "Please enter a valid email address";
+    if (userType === "college" && !collegeEmailRegex.test(value.toLowerCase())) {
+      return "College users must use a .edu or .ac.in email address";
+    }
+    return "";
+  };
+
+  const handleEmailChange = (e) => {
+    const value = e.target.value;
+    setEmail(value);
+
+    const emailError = validateEmail(value);
+    if (emailError) {
+      setErrors((prev) => ({ ...prev, email: emailError, general: "" }));
+    } else {
+      setErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors.email;
+        return newErrors;
+      });
+    }
+  };
+
+  const handlePasswordChange = (e) => {
+    const value = e.target.value;
+    setPassword(value);
+
+    if (!value) {
+      setErrors((prev) => ({ ...prev, password: "Password is required", general: "" }));
+    } else {
+      setErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors.password;
+        return newErrors;
+      });
+    }
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError("");
-    setLoading(true); // <-- Start loading
 
-    if (!email) {
-      setError("Please enter your email.");
-      setLoading(false);
+    // Clear general error
+    setErrors((prev) => ({ ...prev, general: "" }));
+
+    // Full validation before attempting login
+    const emailError = validateEmail(email);
+    const passwordError = !password ? "Password is required" : "";
+
+    if (emailError || passwordError) {
+      setErrors({
+        ...(emailError ? { email: emailError } : {}),
+        ...(passwordError ? { password: passwordError } : {})
+      });
       return;
     }
 
-    if (!isValidEmail(email)) {
-      setError("Please enter a valid email address.");
-      return;
+    // Remember user email if selected
+    if (rememberMe) {
+      localStorage.setItem("keto_email", email);
+      localStorage.setItem("keto_userType", userType);
     }
 
-    if (
-      userType === "college" &&
-      !collegeEmailRegex.test(email.toLowerCase())
-    ) {
-      setError(
-        "College users must login with a valid .edu or .ac.in email address."
-      );
-      return;
-    }
-
-    if (!password) {
-      setError("Please enter your password.");
-      return;
-    }
+    // Start loading state
+    setLoading(true);
 
     try {
+      // Set up request timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 8000); // 8-second timeout
+
       const response = await fetch("http://127.0.0.1:8000/api/login/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password, userType }),
+        signal: controller.signal
       });
 
+      clearTimeout(timeoutId);
       const data = await response.json();
 
       if (response.ok) {
-        localStorage.setItem("user", JSON.stringify(data));
-        // alert(
-        //   `Login successful as ${
-        //     userType === "college" ? "College User" : "General User"
-        //   }!`
-        // );
-
-        if (userType === "college") {
-          navigate("/college-dashboard");
-        } else {
-          navigate("/Home");
+        // Cache successful login data to speed up future logins
+        try {
+          sessionStorage.setItem(
+            `login_${email}`,
+            JSON.stringify({
+              timestamp: Date.now(),
+              data
+            })
+          );
+        } catch (e) {
+          console.log("Error caching user data");
         }
+
+        localStorage.setItem("user", JSON.stringify(data));
+        navigate(userType === "college" ? "/college-dashboard" : "/Home");
       } else {
-        setError(
-          data.message ||
-            data.detail ||
-            "Login failed. Please check your credentials."
-        );
+        setErrors({
+          general: data.message || data.detail || "Login failed. Please check your credentials."
+        });
       }
     } catch (err) {
-      setError("Something went wrong. Please try again.");
+      if (err.name === 'AbortError') {
+        setErrors({
+          general: "Login request timed out. Please try again."
+        });
+      } else {
+        setErrors({
+          general: "Connection error. Please check your internet and try again."
+        });
+      }
+      console.error("Login error:", err);
     } finally {
-      setLoading(false); // <-- Stop loading
+      setLoading(false);
     }
   };
 
   const handleUserTypeChange = (type) => {
     setUserType(type);
-    setError("");
+    if (email) {
+      const emailError = validateEmail(email);
+      if (emailError) {
+        setErrors(prev => ({...prev, email: emailError}));
+      } else {
+        setErrors(prev => {
+          const newErrors = {...prev};
+          delete newErrors.email;
+          return newErrors;
+        });
+      }
+    }
   };
 
   return (
@@ -133,9 +227,9 @@ const Login = () => {
             : "Enter your email address"}
         </p>
 
-        {error && (
+        {errors.general && (
           <div className="bg-red-50 border border-red-200 text-red-600 p-3 rounded-md mb-5 text-sm">
-            {error}
+            {errors.general}
           </div>
         )}
 
@@ -148,10 +242,13 @@ const Login = () => {
               type="email"
               placeholder="Enter your email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              onChange={handleEmailChange}
+              className={`w-full p-3 border ${errors.email ? "border-red-300" : "border-gray-300"} rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
               required
             />
+            {errors.email && (
+              <p className="mt-1 text-sm text-red-500">{errors.email}</p>
+            )}
           </div>
 
           <div className="mb-5">
@@ -162,15 +259,23 @@ const Login = () => {
               type="password"
               placeholder="Enter your password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              onChange={handlePasswordChange}
+              className={`w-full p-3 border ${errors.password ? "border-red-300" : "border-gray-300"} rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
               required
             />
+            {errors.password && (
+              <p className="mt-1 text-sm text-red-500">{errors.password}</p>
+            )}
           </div>
 
           <div className="flex items-center justify-between mb-5">
             <label className="flex items-center text-sm text-gray-700">
-              <input type="checkbox" className="mr-2" />
+              <input
+                type="checkbox"
+                className="mr-2"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+              />
               Remember me
             </label>
             <Link

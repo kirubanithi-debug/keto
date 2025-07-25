@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',  # Add this
     'login',
+    'signup',
 ]
 
 MIDDLEWARE = [
@@ -134,3 +135,6 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = True
+
+AUTH_USER_MODEL = 'auth.User'

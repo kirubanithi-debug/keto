@@ -82,13 +82,44 @@ const Signup = () => {
     }
 
     try {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
-      // Here you would normally send data to your backend
-      console.log("Form Data:", formData);
-      
+     const payload = {
+      username: formData.name,
+      email: formData.email,
+      password: formData.password,
+      confirm_password: formData.confirmPassword,
+     };
+     const response = await fetch("http://127.0.0.1:8000/api/signup/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      console.log(data); // Add this line
       setSubmitted(true);
+      setFormData({
+        name: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+      });
+      setErrors({});
+    } else {
+      if (typeof data === "object" && data !== null) {
+        const backendErrors = {};
+        for (const key in data) {
+          backendErrors[key] = Array.isArray(data[key])
+        ? data[key].join(" ")
+        : data[key];
+        }
+        setErrors(backendErrors);
+      } else {
+        setErrors({ submit: "An error occurred. Please try again." });
+      }
+    }
+
     } catch (error) {
       console.error("Signup error:", error);
       setErrors({
@@ -100,7 +131,7 @@ const Signup = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-4">
+    <div className="flex items-center justify-center min-h-screen  bg-gray-100 p-4">
       <div className="w-full max-w-md">
         {/* Card with slight shadow and refined border */}
         <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
@@ -164,8 +195,8 @@ const Signup = () => {
               </div>
               {errors.email && (
                 <div className="text-red-500 text-xs mt-1 flex items-center">
-                  <AlertCircle size={14} className="mr-1" />
-                  {errors.email}
+                  {/* <AlertCircle size={14} className="mr-1" />
+                  {errors.email} */}
                 </div>
               )}
             </div>

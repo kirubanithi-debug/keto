@@ -20,4 +20,5 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('login.urls')),  # This routes /api/ to login app
+    path('api/', include('signup.urls')),  # This routes /api/signup/ to signup app
 ]
