@@ -96,8 +96,8 @@ const Signup = () => {
       body: JSON.stringify(payload),
     });
     const data = await response.json();
-    if (!response.ok) {
-      console.log(data); // Add this line
+    if (response.ok) {
+      console.log(data);
       setSubmitted(true);
       setFormData({
         name: "",
