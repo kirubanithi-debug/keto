@@ -97,7 +97,7 @@ const Signup = () => {
     });
     const data = await response.json();
     if (response.ok) {
-      console.log(data);
+      console.log(data);///if error showes remove
       setSubmitted(true);
       setFormData({
         name: "",
@@ -195,8 +195,8 @@ const Signup = () => {
               </div>
               {errors.email && (
                 <div className="text-red-500 text-xs mt-1 flex items-center">
-                  {/* <AlertCircle size={14} className="mr-1" />
-                  {errors.email} */}
+                  <AlertCircle size={14} className="mr-1" />
+                  {errors.email}
                 </div>
               )}
             </div>
