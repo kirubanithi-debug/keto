@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'corsheaders',  # Add this
     'login',
     'signup',
+    'application'
 ]
 
 MIDDLEWARE = [
@@ -138,3 +139,7 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = True
 
 AUTH_USER_MODEL = 'auth.User'
+
+import os
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

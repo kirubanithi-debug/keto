@@ -124,28 +124,52 @@ const JobApplication = () => {
     if (!validateForm()) return;
 
     setIsSubmitting(true);
-    await new Promise((res) => setTimeout(res, 2000));
-    setIsSubmitting(false);
-    setSubmitted(true);
 
-    setTimeout(() => {
-      setSubmitted(false);
-      setUser({
-        username: "",
-        email: "",
-        phone: "",
-        workplace: "",
-        Department: "",
-        customDepartment: "",
-        workplacename: "",
-        experience: "",
-        resume: null,
+    // Prepare form data for backend
+    const formData = new FormData();
+    formData.append("username", user.username);
+    formData.append("email", user.email);
+    formData.append("phone", user.phone);
+    formData.append("workplace", user.workplace);
+    formData.append(
+      "department",
+      user.Department === "Other" ? user.customDepartment : user.Department
+    );
+    formData.append("workplacename", user.workplacename);
+    formData.append("experience", user.experience);
+    formData.append("resume", user.resume);
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/apply/", {
+        method: "POST",
+        body: formData,
       });
-      setErrors({});
-      if (document.getElementById("resume-upload")) {
-        document.getElementById("resume-upload").value = "";
+      const data = await response.json();
+      if (response.ok) {
+        setSubmitted(true);
+        setUser({
+          username: "",
+          email: "",
+          phone: "",
+          workplace: "",
+          Department: "",
+          customDepartment: "",
+          workplacename: "",
+          experience: "",
+          resume: null,
+        });
+        setErrors({});
+        if (document.getElementById("resume-upload")) {
+          document.getElementById("resume-upload").value = "";
+        }
+        setTimeout(() => setSubmitted(false), 4000);
+      } else {
+        setErrors(data);
       }
-    }, 4000);
+    } catch (error) {
+      setErrors({ general: "Submission failed. Try again." });
+    }
+    setIsSubmitting(false);
   };
 
   if (submitted) {
