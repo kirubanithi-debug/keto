@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   User,
   Mail,
@@ -9,7 +9,8 @@ import {
   AlertCircle,
   FileText,
   ChevronDown,
-} from "lucide-react";
+  Lock
+} from "lucide-react"; //icon for forms like user, mail, phone, building, calendar, check circle, alert circle, file text, chevron down and lock
 
 const JobApplication = () => {
   // Add department options
@@ -30,13 +31,23 @@ const JobApplication = () => {
     "Other",
   ];
 
+  // Get logged-in user info from localStorage
+  const loggedInUser = (() => {
+    try {
+      return JSON.parse(localStorage.getItem("user")) || {};
+    } catch {
+      return {};
+    }
+  })();
+
+  // Initialize form state with name and email if available
   const [user, setUser] = useState({
-    username: "",
-    email: "",
+    username: loggedInUser.username || "",
+    email: loggedInUser.email || "",
     phone: "",
     workplace: "",
     Department: "",
-    customDepartment: "", // Added for custom department input
+    customDepartment: "",
     workplacename: "",
     experience: "",
     resume: null,
@@ -82,12 +93,12 @@ const JobApplication = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUser((prev) => ({ ...prev, [name]: value }));
-    
+
     // Clear custom department if user selects a different option
     if (name === "Department" && value !== "Other") {
       setUser((prev) => ({ ...prev, customDepartment: "" }));
     }
-    
+
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
@@ -146,10 +157,9 @@ const JobApplication = () => {
       });
       const data = await response.json();
       if (response.ok) {
-        setSubmitted(true);
         setUser({
-          username: "",
-          email: "",
+          username: loggedInUser.username || "",
+          email: loggedInUser.email || "",
           phone: "",
           workplace: "",
           Department: "",
@@ -171,6 +181,29 @@ const JobApplication = () => {
     }
     setIsSubmitting(false);
   };
+
+  const handleNameFocus = () => {
+    if (!user.username && loggedInUser.username) {
+      setUser((prev) => ({ ...prev, username: loggedInUser.username }));
+      setErrors((prev) => ({ ...prev, username: "" }));
+    }
+  };
+
+  const handleEmailFocus = (e) => {
+    if (!user.email) {
+      setUser((prev) => ({ ...prev, email: loggedInEmail }));
+      setErrors((prev) => ({ ...prev, email: "" }));
+    }
+  };
+
+  // If you want to update autofill when user info changes in localStorage:
+  useEffect(() => {
+    setUser((prev) => ({
+      ...prev,
+      username: loggedInUser.username || "",
+      email: loggedInUser.email || "",
+    }));
+  }, []);
 
   if (submitted) {
     return (
@@ -208,8 +241,10 @@ const JobApplication = () => {
             name="username"
             value={user.username}
             onChange={handleChange}
+            onFocus={handleNameFocus}
             error={errors.username}
             placeholder="Enter your full name"
+            readOnly={true} //user can not fill this field
           />
 
           <FieldWrapper
@@ -218,9 +253,11 @@ const JobApplication = () => {
             name="email"
             value={user.email}
             onChange={handleChange}
+            onFocus={handleEmailFocus}
             error={errors.email}
             placeholder="you@example.com"
             type="email"
+            readOnly={true} //user can not fill this field
           />
 
           <FieldWrapper
@@ -380,36 +417,46 @@ const FieldWrapper = ({
   error,
   placeholder,
   type = "text",
-  ...rest
-}) => (
-  <div className="p-5 rounded-xl border border-gray-100 bg-white shadow-sm space-y-3">
-    <label className="block text-lg font-medium text-gray-700">
-      {icon}
-      {label}
-    </label>
-    <input
-      type={type}
-      name={name}
-      value={value}
-      onChange={onChange}
-      placeholder={placeholder}
-      className={`w-full px-6 py-4 text-lg border rounded-lg focus:outline-none transition-colors focus:ring-2 h-10 ${
-        error
-          ? "border-red-200 focus:border-red-400 focus:ring-red-50"
-          : "border-gray-200 focus:border-violet-300 focus:ring-violet-50"
-      }`}
-      {...rest}
-    />
-    {error && (
-      <p className="text-red-500 text-sm mt-1 flex items-center">
-        <AlertCircle className="w-4 h-4 mr-1" />
-        {error}
-      </p>
-    )}
-  </div>
-);
+  readOnly = false,
+}) => {
+  const inputId = `field-${name}`;
+  return (
+    <div className="p-5 rounded-xl border border-gray-100 bg-white shadow-sm space-y-3">
+      <label
+        className="text-lg font-medium text-gray-700 flex items-center"
+        htmlFor={inputId}
+      >
+        {icon} {label}{" "}
+        {readOnly && <Lock className="ml-2 w-4 h-4 text-gray-400" />}
+      </label>
+      <input
+        id={inputId}
+        type={type}
+        name={name}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        readOnly={readOnly}
+        className={`w-full px-6 py-4 text-lg border rounded-lg focus:outline-none transition-colors focus:ring-2 h-10 ${
+          error
+            ? "border-red-200 focus:border-red-400 focus:ring-red-50"
+            : "border-gray-200 focus:border-violet-300 focus:ring-violet-50"
+        } ${readOnly ? "bg-gray-100 cursor-not-allowed text-gray-500" : ""}`}
+      />
+      {readOnly && (
+        <p className="text-xs text-gray-400">
+          This field is autofilled and cannot be edited.
+        </p>
+      )}
+      {error && (
+        <p className="text-red-500 text-sm mt-1 flex items-center">
+          <AlertCircle className="w-4 h-4 mr-1" /> {error}
+        </p>
+      )}
+    </div>
+  );
+};
 
-// Updated SelectWrapper component with lighter borders
 const SelectWrapper = ({
   label,
   icon,
@@ -421,9 +468,8 @@ const SelectWrapper = ({
   options,
 }) => (
   <div className="p-5 rounded-xl border border-gray-100 bg-white shadow-sm space-y-3">
-    <label className="block text-lg font-medium text-gray-700">
-      {icon}
-      {label}
+    <label className="text-lg font-medium text-gray-700 flex items-center">
+      {icon} {label}
     </label>
     <div className="relative">
       <select
@@ -435,18 +481,16 @@ const SelectWrapper = ({
             ? "border-red-200 focus:border-red-400 focus:ring-red-50"
             : "border-gray-200 focus:border-violet-300 focus:ring-violet-50"
         } ${!value ? "text-gray-400" : "text-gray-900"}`}
-        style={{
-          WebkitAppearance: 'none',
-          MozAppearance: 'none',
-          appearance: 'none',
-          backgroundImage: 'none'
-        }}
       >
         <option value="" disabled className="text-gray-400">
           {placeholder}
         </option>
         {options.map((option) => (
-          <option key={option} value={option} className="text-gray-900 bg-white">
+          <option
+            key={option}
+            value={option}
+            className="text-gray-900 bg-white"
+          >
             {option}
           </option>
         ))}
@@ -455,8 +499,7 @@ const SelectWrapper = ({
     </div>
     {error && (
       <p className="text-red-500 text-sm mt-1 flex items-center">
-        <AlertCircle className="w-4 h-4 mr-1" />
-        {error}
+        <AlertCircle className="w-4 h-4 mr-1" /> {error}
       </p>
     )}
   </div>

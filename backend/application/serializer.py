@@ -13,3 +13,8 @@ class ApplicationSerializer(serializers.ModelSerializer):
            if len(phone) != 10:
                raise serializers.ValidationError("Phone number must be 10 digits.")
            return value
+  
+    def validate_email(self, value):
+         if Application.objects.filter(email=value).exists():
+             raise serializers.ValidationError("Email already exists.")
+         return value
