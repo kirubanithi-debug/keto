@@ -9,7 +9,7 @@ import {
   AlertCircle,
   FileText,
   ChevronDown,
-  Lock
+  Lock,
 } from "lucide-react"; //icon for forms like user, mail, phone, building, calendar, check circle, alert circle, file text, chevron down and lock
 
 const JobApplication = () => {
@@ -172,7 +172,8 @@ const JobApplication = () => {
         if (document.getElementById("resume-upload")) {
           document.getElementById("resume-upload").value = "";
         }
-        setTimeout(() => setSubmitted(false), 4000);
+        setSubmitted(true); // Set submitted to true here
+        setTimeout(() => setSubmitted(false), 6000); // Show message for 6 seconds
       } else {
         setErrors(data);
       }
@@ -218,6 +219,14 @@ const JobApplication = () => {
           <p className="text-gray-600 text-lg mb-6">
             Thank you for applying. We will review your application shortly.
           </p>
+
+          {/* Add this button */}
+          <button
+            onClick={() => setSubmitted(false)}
+            className="mt-4 px-6 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-colors"
+          >
+            Return to Form
+          </button>
         </div>
       </div>
     );
