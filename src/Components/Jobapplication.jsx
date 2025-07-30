@@ -56,6 +56,11 @@ const JobApplication = () => {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [ischecked, setIsChecked] = useState(false);
+  
+  const handleCheckbox = () => {
+    setIsChecked(!ischecked);
+  };
 
   const validateForm = () => {
     const newErrors = {};
@@ -85,6 +90,9 @@ const JobApplication = () => {
       newErrors.experience = "Enter a valid number";
     }
     if (!user.resume) newErrors.resume = "Upload your resume";
+    
+    // Add checkbox validation
+    if (!ischecked) newErrors.terms = "You must accept the terms and conditions";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -142,10 +150,16 @@ const JobApplication = () => {
     formData.append("email", user.email);
     formData.append("phone", user.phone);
     formData.append("workplace", user.workplace);
-    formData.append(
-      "department",
-      user.Department === "Other" ? user.customDepartment : user.Department
-    );
+    
+    // Fix the department handling
+    if (user.Department === "Other") {
+      formData.append("department", "Other");
+      formData.append("custom_department", user.customDepartment);
+    } else {
+      formData.append("department", user.Department);
+      formData.append("custom_department", "");
+    }
+    
     formData.append("workplacename", user.workplacename);
     formData.append("experience", user.experience);
     formData.append("resume", user.resume);
@@ -169,11 +183,12 @@ const JobApplication = () => {
           resume: null,
         });
         setErrors({});
+        setIsChecked(false); // Reset checkbox
         if (document.getElementById("resume-upload")) {
           document.getElementById("resume-upload").value = "";
         }
-        setSubmitted(true); // Set submitted to true here
-        setTimeout(() => setSubmitted(false), 6000); // Show message for 6 seconds
+        setSubmitted(true);
+        setTimeout(() => setSubmitted(false), 6000);
       } else {
         setErrors(data);
       }
@@ -379,14 +394,58 @@ const JobApplication = () => {
           </div>
         </div>
 
+        {/* Terms and Conditions Checkbox */}
+        <div className="pt-6 border-t border-gray-200">
+          <div className="flex items-start space-x-3">
+            <div className="flex items-center h-6">
+              <input
+                id="terms-checkbox"
+                type="checkbox"
+                checked={ischecked}
+                onChange={handleCheckbox}
+                className="w-5 h-5 text-violet-600 border-2 border-gray-300 rounded focus:ring-violet-500 focus:ring-2 focus:ring-offset-0"
+              />
+            </div>
+            <div className="min-w-0 flex-1">
+              <label 
+                htmlFor="terms-checkbox" 
+                className="text-sm font-medium text-gray-700 cursor-pointer"
+              >
+                I accept the{" "}
+                <a 
+                  href="#" 
+                  className="text-violet-600 hover:text-violet-700 underline"
+                  onClick={(e) => e.preventDefault()}
+                >
+                  Terms and Conditions
+                </a>{" "}
+                and{" "}
+                <a 
+                  href="#" 
+                  className="text-violet-600 hover:text-violet-700 underline"
+                  onClick={(e) => e.preventDefault()}
+                >
+                  Privacy Policy
+                </a>
+              </label>
+              {errors.terms && (
+                <p className="text-red-500 text-sm mt-1 flex items-center">
+                  <AlertCircle className="w-4 h-4 mr-1" />
+                  {errors.terms}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+
         {/* Submit Button */}
-        <div className="pt-10">
+        <div className="pt-6">
           <button
             onClick={handleSubmit}
-            disabled={isSubmitting}
+            disabled={isSubmitting || !ischecked}
             className={`w-full h-14 text-lg font-semibold border rounded-lg transition-all duration-300 ${
-              isSubmitting
-                ? "bg-gray-400 cursor-not-allowed"
+              isSubmitting || !ischecked
+                ? "bg-gray-400 cursor-not-allowed text-gray-600"
                 : "bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded hover:from-violet-700 hover:to-indigo-700 transform hover:scale-[1.02] shadow-lg hover:shadow-xl"
             }`}
           >
