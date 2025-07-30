@@ -6,6 +6,7 @@ import Login from "./Components/Login";
 import Signup from "./Components/Signup";
 import About from "./Components/About";
 import Forgotpassword from "./Components/Forgotpassword";
+// import Footer from "./Components/Footer";
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
           <Route path="Home" element={<Header />} />
         </Routes>
       </Router>
+      {/* <Footer /> */}
     </div>
   );
 };
