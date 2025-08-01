@@ -202,7 +202,7 @@ const Login = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-indigo-900">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-indigo-900">
       {/* <NavbarOnly /> */}
       <div className="min-h-screen flex items-center justify-center p-5 pt-24">
         <div className="bg-gray-800 backdrop-blur-lg border border-white/20 p-10 rounded-2xl shadow-2xl w-full max-w-md relative">
