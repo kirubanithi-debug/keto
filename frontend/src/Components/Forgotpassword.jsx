@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Mail, ArrowLeft, CheckCircle, AlertCircle, Clock } from 'lucide-react';
+import NavbarOnly from './NavbarOnly';
 
 const ForgotPassword = () => {
   const [formData, setFormData] = useState({
@@ -179,14 +180,16 @@ const ForgotPassword = () => {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-    <form
-        onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md"
-        noValidate
-      >
-        <div className="text-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Forgot Password?</h1>
+    <div className="w-full overflow-hidden">
+      <NavbarOnly />
+      <div className="relative z-10 pt-20 min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 flex items-center justify-center p-4">
+        <form
+          onSubmit={handleSubmit}
+          className="bg-white/10 backdrop-blur-md p-8 rounded-2xl border border-white/20 w-full max-w-md"
+          noValidate
+        >
+          <div className="text-center mb-6">
+            <h1 className="text-3xl font-bold text-white mb-2">Forgot Password?</h1>
           <p className="text-gray-600">
             Enter your email address and we'll send you a link to reset your password.
           </p>
@@ -293,7 +296,8 @@ const ForgotPassword = () => {
             </button>
           </p>
         </div>
-    </form> 
+      </form> 
+    </div>
     </div>
   );
 };

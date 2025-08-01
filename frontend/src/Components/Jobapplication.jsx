@@ -11,6 +11,7 @@ import {
   ChevronDown,
   Lock,
 } from "lucide-react"; //icon for forms like user, mail, phone, building, calendar, check circle, alert circle, file text, chevron down and lock
+import NavbarOnly from "./NavbarOnly";
 
 const JobApplication = () => {
   // Add department options
@@ -248,14 +249,16 @@ const JobApplication = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex justify-center items-start py-12 px-4 overflow-y-auto">
-      <div className="bg-white shadow-2xl rounded-2xl w-full max-w-3xl p-10">
-        <div className="text-center mb-8">
-          <p className="text-4xl font-bold text-gray-800">Join Our Team</p>
-          <p className="text-gray-500 text-lg mt-2">
-            We'd love to hear from you. Please fill in the form below.
-          </p>
-        </div>
+    <div className="w-full overflow-hidden">
+      <NavbarOnly />
+      <div className="relative z-10 pt-20 min-h-screen bg-gradient-to-br from-blue-800 to-indigo-400 flex justify-center items-start py-12 px-4 overflow-y-auto">
+        <div className="bg-white backdrop-blur-md shadow-2xl rounded-2xl w-full max-w-4xl p-10 border border-white/20">
+          <div className="text-center mb-8">
+            <p className="text-4xl font-bold text-black">Join Our Team</p>
+            <p className="text-black text-lg mt-2">
+              We'd love to hear from you. Please fill in the form below.
+            </p>
+          </div>
 
         {/* Form Fields */}
         <div className="space-y-6">
@@ -461,16 +464,17 @@ const JobApplication = () => {
         </div>
 
         {/* Footer */}
-        <div className="text-center mt-10 text-sm text-gray-500">
+        <div className="text-center mt-10 text-sm text-gray-300">
           Questions? Email us at{" "}
           <a
             href="mailto:careers@company.com"
-            className="text-violet-600 hover:underline"
+            className="text-blue-400 hover:underline"
           >
             Keto@company.com
           </a>
         </div>
       </div>
+    </div>
     </div>
   );
 };

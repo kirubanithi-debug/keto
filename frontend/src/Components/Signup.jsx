@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff, User, Mail, Lock, CheckCircle, AlertCircle } from "lucide-react";
+import NavbarOnly from "./NavbarOnly";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -136,13 +137,15 @@ const Signup = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen  bg-gray-100 p-4">
-      <div className="w-full max-w-md">
-        {/* Card with slight shadow and refined border */}
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
-          {/* Blue header section */}
-          <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-6 text-white">
-            <h2 className="text-2xl font-bold text-center">Create an Account</h2>
+    <div className="w-full overflow-hidden">
+      <NavbarOnly />
+      <div className="relative z-10 pt-20 min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 flex items-center justify-center p-4">
+        <div className="w-full max-w-md">
+          {/* Card with backdrop blur and glass effect */}
+          <div className="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 overflow-hidden">
+            {/* Header section */}
+            <div className="px-8 py-6 text-white border-b border-white/20">
+              <h2 className="text-3xl font-bold text-center">Create an Account</h2>
             <p className="text-blue-100 text-center text-sm mt-1">Join our community today</p>
           </div>
           
@@ -348,6 +351,7 @@ const Signup = () => {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 };
