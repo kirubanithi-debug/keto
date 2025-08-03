@@ -20,9 +20,9 @@ const App = () => {
           <Route path="/apply" element={<Jobapplication />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/about" element={<About />} />
+          {/* <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/services" element={<Services />} />
+          <Route path="/services" element={<Services />} /> */}
           <Route path="/track" element={<Track />} />
           <Route path="/forgotpassword" element={<Forgotpassword />} />
         </Routes>

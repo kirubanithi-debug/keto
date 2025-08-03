@@ -47,7 +47,7 @@ const NavbarOnly = () => {
       }
     } catch (error) {
       console.error("Error parsing user data:", error);
-      localStorage.removeItem("user"); // Clear corrupted data
+      localStorage.removeItem("user");
     }
   }, []);
 
@@ -75,12 +75,26 @@ const NavbarOnly = () => {
   }, [profileOpen, mobileMenuOpen]);
 
   // Navigation helpers
-  const goTo = (path, delay = 300) => {
+  const goTo = (path, delay = 0) => {
+    setMobileMenuOpen(false);
+    setProfileOpen(false);
     setTimeout(() => {
-      setMobileMenuOpen(false);
-      setProfileOpen(false); // Close profile dropdown too
       navigate(path);
     }, delay);
+  };
+
+  // Add new function for smooth scrolling to sections
+  const scrollToSection = (sectionId) => {
+    setMobileMenuOpen(false);
+    setProfileOpen(false);
+    
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
   };
   
   const handleLogout = () => {
@@ -98,9 +112,8 @@ const NavbarOnly = () => {
     setProfileOpen(false);
     navigate("/profile");
   };
-  
 
-  // Profile dropdown trigger component with safe user access
+  // Profile dropdown trigger component
   const ProfileTrigger = () =>
     user ? (
       <div className="relative" ref={profileRef}>
@@ -182,23 +195,23 @@ const NavbarOnly = () => {
       </div>
     ) : (
       <button
-        onClick={() => goTo("/login", 300)} 
+        onClick={() => goTo("/login")} 
         className={`px-6 py-2.5 font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-400/50 ${
           scrolled 
             ? 'bg-blue-600 text-white hover:bg-blue-700' 
-            : 'bg-white text-blue-600 hover:bg-blue-50'
+            : 'bg-white text-blue-600 hover:bg-blue-500 hover:text-white'
         }`}
       >
         Sign In
       </button>
     );
 
-  // Navigation menu items with proper event handling
+  // Navigation menu items
   const NavItems = ({ className = "", mobile = false }) => (
     <ul className={className}>
       <li className={mobile ? "border-b border-gray-100 last:border-b-0" : ""}>
         <button 
-          onClick={() => goTo("/home")} 
+          onClick={() => scrollToSection("hero")} 
           className={`cursor-pointer font-medium transition-all duration-200 ${
             mobile 
               ? "block w-full text-left px-6 py-4 hover:bg-blue-50 hover:text-blue-600" 
@@ -210,7 +223,7 @@ const NavbarOnly = () => {
       </li>
       <li className={mobile ? "border-b border-gray-100 last:border-b-0" : ""}>
         <button 
-          onClick={() => goTo("/about")} 
+          onClick={() => scrollToSection("about")} 
           className={`cursor-pointer font-medium transition-all duration-200 ${
             mobile 
               ? "block w-full text-left px-6 py-4 hover:bg-blue-50 hover:text-blue-600" 
@@ -222,7 +235,7 @@ const NavbarOnly = () => {
       </li>
       <li className={mobile ? "border-b border-gray-100 last:border-b-0" : ""}>
         <button 
-          onClick={() => goTo("/contact")}
+          onClick={() => scrollToSection("contact")}
           className={`cursor-pointer font-medium transition-all duration-200 ${
             mobile 
               ? "block w-full text-left px-6 py-4 hover:bg-blue-50 hover:text-blue-600" 
@@ -234,7 +247,7 @@ const NavbarOnly = () => {
       </li>
       <li className={mobile ? "border-b border-gray-100 last:border-b-0" : ""}>
         <button 
-          onClick={() => goTo("/services")}
+          onClick={() => scrollToSection("services")}
           className={`cursor-pointer font-medium transition-all duration-200 ${
             mobile 
               ? "block w-full text-left px-6 py-4 hover:bg-blue-50 hover:text-blue-600" 
@@ -244,6 +257,7 @@ const NavbarOnly = () => {
           Services
         </button>
       </li>
+      
       {user && (
         <li className={mobile ? "" : ""}>
           <button 
@@ -265,14 +279,14 @@ const NavbarOnly = () => {
     <header className={`fixed top-0 left-0 right-0 z-50 h-20 transition-all duration-300 ${
       scrolled 
         ? 'bg-white/95 backdrop-blur-md shadow-xl border-b border-gray-200/50' 
-        : 'bg-white/10 backdrop-blur-md border-b border-white/10'
+        : 'bg-blue-900/9 border-b border-white'
     }`}>
       <div className="container w-full max-w-full mx-auto h-full flex justify-between items-center px-6">
-        {/* Professional Logo */}
+        {/* Logo */}
         <div className="flex items-center cursor-pointer" onClick={() => goTo("/home")}>
           <div className="flex items-center gap-3">
             <img src={logo} alt="Keto" className="h-10 object-contain" />
-            <div className={`hidden md:block transition-colors ${scrolled ? 'text-gray-800' : 'text-white'}`}>
+            <div className={`hidden md:block transition-colors ${scrolled ? 'text-blue-800' : 'text-white'}`}>
               <h1 className="text-xl font-bold">Keto</h1>
               <p className="text-xs opacity-70">Career Solutions</p>
             </div>
@@ -302,7 +316,7 @@ const NavbarOnly = () => {
           </button>
         </div>
         
-        {/* Professional Mobile Menu */}
+        {/* Mobile Menu */}
         <div
           ref={mobileMenuRef}
           className={`lg:hidden fixed top-20 right-0 w-80 bg-white shadow-2xl transform transition-all duration-300 ease-out z-40 ${

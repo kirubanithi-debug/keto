@@ -252,7 +252,7 @@ const JobApplication = () => {
     <div className="w-full overflow-hidden">
       <NavbarOnly />
       <div className="relative z-10 pt-20 min-h-screen bg-gradient-to-br from-blue-800 to-indigo-400 flex justify-center items-start py-12 px-4 overflow-y-auto">
-        <div className="bg-white backdrop-blur-md shadow-2xl rounded-2xl w-full max-w-4xl p-10 border border-white/20">
+        <div className="bg-gray-100 backdrop-blur-md shadow-2xl rounded-2xl w-full max-w-4xl p-10 border border-white/20">
           <div className="text-center mb-8">
             <p className="text-4xl font-bold text-black">Join Our Team</p>
             <p className="text-black text-lg mt-2">
