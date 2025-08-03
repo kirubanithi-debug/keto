@@ -58,7 +58,7 @@ const Services = () => {
               </ul>
             </div>
             
-            {/* Service 3 */}
+            {/* Service 3
             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20 hover:bg-white/20 transition-all duration-300">
               <div className="w-16 h-16 bg-blue-600 rounded-lg flex items-center justify-center mb-6">
                 <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -75,9 +75,9 @@ const Services = () => {
                 <li>• Content writing assistance</li>
                 <li>• Multi-format exports</li>
               </ul>
-            </div>
+            </div> */}
             
-            {/* Service 4 */}
+            {/* Service 4
             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20 hover:bg-white/20 transition-all duration-300">
               <div className="w-16 h-16 bg-blue-600 rounded-lg flex items-center justify-center mb-6">
                 <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -94,7 +94,7 @@ const Services = () => {
                 <li>• Behavioral coaching</li>
                 <li>• Performance feedback</li>
               </ul>
-            </div>
+            </div> */}
             
             {/* Service 5 */}
             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20 hover:bg-white/20 transition-all duration-300">
@@ -115,7 +115,7 @@ const Services = () => {
               </ul>
             </div>
             
-            {/* Service 6 */}
+            {/* Service 6
             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20 hover:bg-white/20 transition-all duration-300">
               <div className="w-16 h-16 bg-blue-600 rounded-lg flex items-center justify-center mb-6">
                 <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -132,7 +132,7 @@ const Services = () => {
                 <li>• Salary benchmarks</li>
                 <li>• Performance metrics</li>
               </ul>
-            </div>
+            </div> */}
           </div>
           
           {/* CTA Section */}
