@@ -9,6 +9,7 @@ import Contact from "./Components/Contact";
 import Services from "./Components/Services";
 import Track from "./Components/Track";
 import Forgotpassword from "./Components/Forgotpassword";
+import Profile from "./Components/Profile";
 
 const App = () => {
   return (
@@ -25,6 +26,7 @@ const App = () => {
           <Route path="/services" element={<Services />} /> */}
           <Route path="/track" element={<Track />} />
           <Route path="/forgotpassword" element={<Forgotpassword />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </Router>
     </div>

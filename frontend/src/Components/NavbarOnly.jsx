@@ -117,81 +117,12 @@ const NavbarOnly = () => {
   const ProfileTrigger = () =>
     user ? (
       <div className="relative" ref={profileRef}>
-        <button
-          className={`flex items-center gap-2 px-3 py-2 rounded-xl backdrop-blur-md border transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400/50 ${
-            scrolled 
-              ? 'bg-gray-100 border-gray-200 text-gray-700 hover:bg-gray-200' 
-              : 'bg-white/10 border-white/20 text-white hover:bg-white/20'
-          }`}
-          aria-label="User profile"
-          onClick={() => setProfileOpen((o) => !o)}
+        <div 
+          className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-lg"
+          onClick={() => goToProfile()}
         >
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
-            <UserCircle className="w-5 h-5 text-white" strokeWidth={2} />
-          </div>
-          <span className="hidden md:block font-medium text-sm">
-            {user.user?.username || user.username || "User"}
-          </span>
-          <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
-            scrolled ? 'text-gray-500' : 'text-white/70'
-          } ${profileOpen ? 'rotate-180' : ''}`} />
-        </button>
-        
-        {profileOpen && (
-          <div className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-gray-100 z-50 text-gray-800 overflow-hidden">
-            <div className="p-6 bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white">
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-sm border-2 border-white/30 flex items-center justify-center">
-                  <UserCircle className="w-8 h-8 text-white" strokeWidth={1.5} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-lg truncate">
-                    {user.user?.username || user.username || "User"}
-                  </h3>
-                  <p className="text-blue-100 text-sm truncate flex items-center gap-1">
-                    <Mail className="w-3.5 h-3.5" />
-                    {user.user?.email || user.email || "No email"}
-                  </p>
-                  <div className="flex items-center gap-1 mt-2">
-                    <BadgeCheck className="w-4 h-4 text-emerald-300" />
-                    <span className="text-xs font-medium text-blue-100">
-                      {capitalize(user.userType || "Member")}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="p-4 space-y-1">
-              <button
-                onClick={goToProfile}
-                className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-blue-50 rounded-lg transition-colors group"
-              >
-                <div className="w-8 h-8 rounded-lg bg-blue-100 group-hover:bg-blue-200 flex items-center justify-center transition-colors">
-                  <UserIcon className="w-4 h-4 text-blue-600" />
-                </div>
-                <div className="flex-1">
-                  <p className="font-medium text-gray-900">Profile Settings</p>
-                  <p className="text-xs text-gray-500">Manage your account</p>
-                </div>
-                <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-blue-600 transition-colors" />
-              </button>
-              
-              <button
-                onClick={handleLogout}
-                className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-red-50 rounded-lg transition-colors group"
-              >
-                <div className="w-8 h-8 rounded-lg bg-red-100 group-hover:bg-red-200 flex items-center justify-center transition-colors">
-                  <LogOut className="w-4 h-4 text-red-600" />
-                </div>
-                <div className="flex-1">
-                  <p className="font-medium text-gray-900">Sign Out</p>
-                  <p className="text-xs text-gray-500">Logout from your account</p>
-                </div>
-              </button>
-            </div>
-          </div>
-        )}
+          <UserCircle className="w-6 h-6 text-white" strokeWidth={2} />
+        </div>
       </div>
     ) : (
       <button
@@ -235,18 +166,6 @@ const NavbarOnly = () => {
       </li>
       <li className={mobile ? "border-b border-gray-100 last:border-b-0" : ""}>
         <button 
-          onClick={() => scrollToSection("contact")}
-          className={`cursor-pointer font-medium transition-all duration-200 ${
-            mobile 
-              ? "block w-full text-left px-6 py-4 hover:bg-blue-50 hover:text-blue-600" 
-              : "hover:text-blue-200 relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-white after:left-0 after:-bottom-1 after:transition-all after:duration-300 hover:after:w-full"
-          }`}
-        >
-          Contact
-        </button>
-      </li>
-      <li className={mobile ? "border-b border-gray-100 last:border-b-0" : ""}>
-        <button 
           onClick={() => scrollToSection("services")}
           className={`cursor-pointer font-medium transition-all duration-200 ${
             mobile 
@@ -255,6 +174,18 @@ const NavbarOnly = () => {
           }`}
         >
           Services
+        </button>
+      </li>
+      <li className={mobile ? "border-b border-gray-100 last:border-b-0" : ""}>
+        <button 
+          onClick={() => scrollToSection("contact")}
+          className={`cursor-pointer font-medium transition-all duration-200 ${
+            mobile 
+              ? "block w-full text-left px-6 py-4 hover:bg-blue-50 hover:text-blue-600" 
+              : "hover:text-blue-200 relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-white after:left-0 after:-bottom-1 after:transition-all after:duration-300 hover:after:w-full"
+          }`}
+        >
+          Contact
         </button>
       </li>
       
