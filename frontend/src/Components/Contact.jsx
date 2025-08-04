@@ -1,8 +1,48 @@
-import React from "react";
+import React, { useState } from "react";
 import NavbarOnly from "./NavbarOnly";
 import Footer from "./Footer";
 
 const Contact = () => {
+  const [formData, setFormData] = useState({
+    first_name: "",
+    last_name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+  const [status, setStatus] = useState("");
+
+  const handleChange = (e) => {
+    setFormData({...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus("sending");
+    try {
+      const response = await fetch("http://localhost:8000/api/contact/",{
+        method: "POST",
+        headers: {
+          "content-type" : "application/json"},
+          body: JSON.stringify(formData)
+        });
+        if (response.ok) {
+          setStatus("Message sent successfully!");
+          setFormData({
+            first_name: "",
+            last_name: "",
+            email: "",
+            subject: "",
+            message: "",
+          });
+
+        } else {
+          setStatus("Error sending message. Please try again.");
+        }
+      } catch (error) {
+        setStatus("An error occurred. Please try again later.");
+      }
+    };
   return (
     <div className="w-full overflow-hidden">
       <NavbarOnly />
@@ -149,5 +189,4 @@ const Contact = () => {
     </div>
   );
 };
-
 export default Contact;

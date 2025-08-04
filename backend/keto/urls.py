@@ -24,5 +24,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('login.urls')),  # This routes /api/ to login app
     path('api/', include('signup.urls')),
-    path('api/', include('application.urls')),  # This routes /api/application/ to application app
+    path('api/', include('application.urls')), 
+    path('api/', include('contact.urls')) # This routes /api/contact/ to contact app
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

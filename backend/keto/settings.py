@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'corsheaders',  # Add this
     'login',
     'signup',
-    'application'
+    'application',
+    'contact',
 ]
 
 MIDDLEWARE = [
