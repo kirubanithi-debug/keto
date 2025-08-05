@@ -10,6 +10,7 @@ import Services from "./Components/Services";
 import Track from "./Components/Track";
 import Forgotpassword from "./Components/Forgotpassword";
 import Profile from "./Components/Profile";
+import SearchJobs from "./Components/Searchjobs"; // Note: importing from Searchjobs.jsx
 
 const App = () => {
   return (
@@ -21,12 +22,13 @@ const App = () => {
           <Route path="/apply" element={<Jobapplication />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          {/* <Route path="/about" element={<About />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/services" element={<Services />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/services" element={<Services />} /> */}
           <Route path="/track" element={<Track />} />
           <Route path="/forgotpassword" element={<Forgotpassword />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/search-jobs" element={<SearchJobs />} />
         </Routes>
       </Router>
     </div>

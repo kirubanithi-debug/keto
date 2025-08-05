@@ -20,29 +20,31 @@ const Contact = () => {
     e.preventDefault();
     setStatus("sending");
     try {
-      const response = await fetch("http://localhost:8000/api/contact/",{
+      const response = await fetch("http://127.0.0.1:8000/api/contact/", {  // Fixed URL
         method: "POST",
         headers: {
-          "content-type" : "application/json"},
-          body: JSON.stringify(formData)
+          "Content-Type": "application/json"  // Fixed header capitalization
+        },
+        body: JSON.stringify(formData)
+      });
+      
+      if (response.ok) {
+        setStatus("Message sent successfully!");
+        setFormData({
+          first_name: "",
+          last_name: "",
+          email: "",
+          subject: "",
+          message: "",
         });
-        if (response.ok) {
-          setStatus("Message sent successfully!");
-          setFormData({
-            first_name: "",
-            last_name: "",
-            email: "",
-            subject: "",
-            message: "",
-          });
-
-        } else {
-          setStatus("Error sending message. Please try again.");
-        }
-      } catch (error) {
-        setStatus("An error occurred. Please try again later.");
+      } else {
+        setStatus("Error sending message. Please try again.");
       }
-    };
+    } catch (error) {
+      setStatus("An error occurred. Please try again later.");
+    }
+  };
+
   return (
     <div className="w-full overflow-hidden">
       <NavbarOnly />
@@ -63,12 +65,28 @@ const Contact = () => {
             {/* Contact Form */}
             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20">
               <h2 className="text-2xl font-bold text-white mb-6">Send us a message</h2>
-              <form className="space-y-6">
+              
+              {/* Status Message */}
+              {status && (
+                <div className={`mb-4 p-3 rounded-lg ${
+                  status === "sending" ? "bg-yellow-100 text-yellow-800" :
+                  status.includes("successfully") ? "bg-green-100 text-green-800" :
+                  "bg-red-100 text-red-800"
+                }`}>
+                  {status}
+                </div>
+              )}
+              
+              <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-white text-sm font-medium mb-2">First Name</label>
                     <input
                       type="text"
+                      name="first_name"
+                      value={formData.first_name}
+                      onChange={handleChange}
+                      required
                       className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400/50 focus:border-transparent"
                       placeholder="John"
                     />
@@ -77,6 +95,10 @@ const Contact = () => {
                     <label className="block text-white text-sm font-medium mb-2">Last Name</label>
                     <input
                       type="text"
+                      name="last_name"
+                      value={formData.last_name}
+                      onChange={handleChange}
+                      required
                       className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400/50 focus:border-transparent"
                       placeholder="Doe"
                     />
@@ -87,6 +109,10 @@ const Contact = () => {
                   <label className="block text-white text-sm font-medium mb-2">Email</label>
                   <input
                     type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
                     className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400/50 focus:border-transparent"
                     placeholder="john@example.com"
                   />
@@ -96,6 +122,10 @@ const Contact = () => {
                   <label className="block text-white text-sm font-medium mb-2">Subject</label>
                   <input
                     type="text"
+                    name="subject"
+                    value={formData.subject}
+                    onChange={handleChange}
+                    required
                     className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400/50 focus:border-transparent"
                     placeholder="How can we help you?"
                   />
@@ -104,6 +134,10 @@ const Contact = () => {
                 <div>
                   <label className="block text-white text-sm font-medium mb-2">Message</label>
                   <textarea
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
+                    required
                     rows="5"
                     className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400/50 focus:border-transparent"
                     placeholder="Tell us more about your inquiry..."
@@ -112,9 +146,10 @@ const Contact = () => {
                 
                 <button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 rounded-lg transition-all duration-300 transform hover:scale-105"
+                  disabled={status === "sending"}
+                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 rounded-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Send Message
+                  {status === "sending" ? "Sending..." : "Send Message"}
                 </button>
               </form>
             </div>

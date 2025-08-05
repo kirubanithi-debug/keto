@@ -172,6 +172,9 @@ const JobApplication = () => {
       });
       const data = await response.json();
       if (response.ok) {
+        // Mark that user has applied
+        localStorage.setItem(`applied_${loggedInUser.email}`, 'true');
+        
         setUser({
           username: loggedInUser.username || "",
           email: loggedInUser.email || "",
